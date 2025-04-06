@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Photo App</string>
+
+    <!-- Camera messages -->
+    <string name="using_back_camera">Using back camera</string>
+    <string name="switch_to_front_camera">You can switch to front camera</string>
+    <string name="using_front_camera">Using front camera</string>
+    <string name="switch_to_back_camera">You can switch to back camera</string>
+
+    <!-- UI elements -->
+    <string name="take_photo">Take photo</string>
+    <string name="switch_camera">Switch camera</string>
+    <string name="camera_not_initialized">Error: Camera not initialized</string>
+    <string name="permissions_required">Permissions are required to use the camera</string>
+
+    <!-- Main menu -->
+    <string name="photo_button">Take Photo</string>
+    <string name="gallery_button">Gallery</string>
+    <string name="gallery_coming_soon">Gallery will be implemented soon</string>
+</resources>

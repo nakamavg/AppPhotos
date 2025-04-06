@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">App de Fotos</string>
+
+    <!-- Camera messages -->
+    <string name="using_back_camera">Usando cámara trasera</string>
+    <string name="switch_to_front_camera">Puedes cambiar a cámara delantera</string>
+    <string name="using_front_camera">Usando cámara delantera</string>
+    <string name="switch_to_back_camera">Puedes cambiar a cámara trasera</string>
+
+    <!-- UI elements -->
+    <string name="take_photo">Tomar foto</string>
+    <string name="switch_camera">Cambiar cámara</string>
+    <string name="camera_not_initialized">Error: Cámara no inicializada</string>
+    <string name="permissions_required">Los permisos son necesarios para usar la cámara</string>
+
+    <!-- Main menu -->
+    <string name="photo_button">Tomar Foto</string>
+    <string name="gallery_button">Galería</string>
+    <string name="gallery_coming_soon">La galería se implementará próximamente</string>
+    
+    <!-- Permission messages -->
+    <string name="permission_required_title">Permisos necesarios</string>
+    <string name="permission_required_message">Esta aplicación necesita permisos para acceder a la cámara y almacenamiento. Por favor, conceda los permisos para continuar.</string>
+    <string name="permission_required_settings_message">Esta aplicación requiere permisos que han sido denegados permanentemente. Por favor, vaya a Ajustes y habilite los permisos manualmente.</string>
+    <string name="ok">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="settings">Ajustes</string>
+    <string name="xiaomi_permission_guide">Si está utilizando un dispositivo Xiaomi, es posible que necesite conceder permisos adicionales en Ajustes > Seguridad > Permisos</string>
+</resources>

@@ -1,0 +1,28 @@
+# Archivos generados por Android Studio
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Archivos de prueba a excluir específicamente
+prueba*.jpeg
+prueba*.jpg
+*.jpeg
+*.jpg
+
+# Otros archivos binarios que normalmente no deberían estar en control de versiones
+*.apk
+*.aab
+*.so
+*.dex

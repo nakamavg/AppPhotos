@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Nemergent Day</string>
+    <!-- Permission strings -->
+    <string name="permission_required_title">Permissions Required</string>
+    <string name="permission_required_message">This app needs camera and storage permissions. Please grant the permissions to continue.</string>
+    <string name="permission_required_settings_message">This app requires permissions that have been permanently denied. Please go to Settings and enable the permissions manually.</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="settings">Settings</string>
+    <string name="xiaomi_permission_guide">If you are using a Xiaomi device, you may need to grant additional permissions in Settings > Security > Permissions</string>
+</resources>

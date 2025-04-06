@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Nemergent</string>
+    <!-- Strings para permisos -->
+    <string name="permission_required_title">Permisos necesarios</string>
+    <string name="permission_required_message">Esta aplicación necesita permisos para acceder a la cámara y almacenamiento. Por favor, conceda los permisos para continuar.</string>
+    <string name="permission_required_settings_message">Esta aplicación requiere permisos que han sido denegados permanentemente. Por favor, vaya a Ajustes y habilite los permisos manualmente.</string>
+    <string name="ok">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="settings">Ajustes</string>
+    <string name="xiaomi_permission_guide">Si está utilizando un dispositivo Xiaomi, es posible que necesite conceder permisos adicionales en Ajustes > Seguridad > Permisos</string>
+</resources>
