@@ -30,6 +30,10 @@
             android:screenOrientation="portrait"
             android:exported="false" />
             
+        <activity android:name=".gallery.GalleryActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+            
     </application>
 
-</manifest> 
+</manifest>

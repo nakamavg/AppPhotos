@@ -2,9 +2,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     
+    <!-- Permisos necesarios para funcionalidad completa -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" 
+        android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    
     <!-- Configuración específica para MIUI -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" 
         tools:ignore="QueryAllPackagesPermission" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:icon="@drawable/ic_nemergent"
@@ -25,6 +36,19 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        
+        <!-- Agregar explícitamente la actividad de la galería -->
+        <activity
+            android:name=".gallery.GalleryActivity" 
+            android:exported="false"
+            android:label="@string/gallery_button"
+            android:screenOrientation="portrait" />
+            
+        <!-- Asegurar que la actividad de la cámara esté también declarada -->
+        <activity
+            android:name=".camera.CameraActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         
         <!-- Para asegurar visibilidad en MIUI -->
         <meta-data

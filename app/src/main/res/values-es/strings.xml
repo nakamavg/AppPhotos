@@ -1,30 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">App de Fotos</string>
-
+    <string name="app_name">Prueba Nemergent</string>
+    
     <!-- Camera messages -->
     <string name="using_back_camera">Usando cámara trasera</string>
-    <string name="switch_to_front_camera">Puedes cambiar a cámara delantera</string>
-    <string name="using_front_camera">Usando cámara delantera</string>
-    <string name="switch_to_back_camera">Puedes cambiar a cámara trasera</string>
-
+    <string name="switch_to_front_camera">Puedes cambiar a la cámara frontal</string>
+    <string name="using_front_camera">Usando cámara frontal</string>
+    <string name="switch_to_back_camera">Puedes cambiar a la cámara trasera</string>
+    
     <!-- UI elements -->
     <string name="take_photo">Tomar foto</string>
     <string name="switch_camera">Cambiar cámara</string>
-    <string name="camera_not_initialized">Error: Cámara no inicializada</string>
-    <string name="permissions_required">Los permisos son necesarios para usar la cámara</string>
-
+    <string name="camera_not_initialized">La cámara no se ha inicializado correctamente</string>
+    <string name="permissions_required">Se requieren permisos para usar esta función</string>
+    
     <!-- Main menu -->
-    <string name="photo_button">Tomar Foto</string>
+    <string name="photo_button">Tomar foto</string>
     <string name="gallery_button">Galería</string>
     <string name="gallery_coming_soon">La galería se implementará próximamente</string>
     
     <!-- Permission messages -->
-    <string name="permission_required_title">Permisos necesarios</string>
-    <string name="permission_required_message">Esta aplicación necesita permisos para acceder a la cámara y almacenamiento. Por favor, conceda los permisos para continuar.</string>
-    <string name="permission_required_settings_message">Esta aplicación requiere permisos que han sido denegados permanentemente. Por favor, vaya a Ajustes y habilite los permisos manualmente.</string>
+    <string name="permission_required_title">Permisos Requeridos</string>
+    <string name="permission_required_message">Esta aplicación necesita permisos de cámara y almacenamiento. Por favor, concede los permisos para continuar.</string>
+    <string name="permission_required_settings_message">Esta aplicación requiere permisos que se han denegado permanentemente. Por favor, ve a Configuración y habilita los permisos manualmente.</string>
     <string name="ok">Aceptar</string>
     <string name="cancel">Cancelar</string>
-    <string name="settings">Ajustes</string>
-    <string name="xiaomi_permission_guide">Si está utilizando un dispositivo Xiaomi, es posible que necesite conceder permisos adicionales en Ajustes > Seguridad > Permisos</string>
+    <string name="settings">Configuración</string>
+    <string name="xiaomi_permission_guide">Si estás usando un dispositivo Xiaomi, es posible que debas conceder permisos adicionales en Ajustes > Seguridad > Permisos</string>
+    
+    <!-- Camera strings added for Room integration -->
+    <string name="processing_image">Procesando imagen…</string>
+    <string name="photo_saved_gallery">Foto guardada en la galería</string>
+    <string name="error_processing_image">Error al procesar la imagen</string>
+    <string name="error_taking_photo">Error al tomar la foto</string>
+    <string name="error_preparing_camera">Error al preparar la cámara</string>
+    <string name="error_decoding_image">No se pudo decodificar la imagen desde el archivo</string>
+    <string name="error_creating_uri">No se pudo crear la URI para guardar la imagen</string>
+    <string name="error_opening_output_stream">No se pudo abrir el flujo de salida para la URI</string>
+    <string name="error_storage_preparation">Error al preparar el almacenamiento</string>
+    
+    <!-- New camera error messages -->
+    <string name="wait_for_processing">Por favor espera, procesando imagen anterior...</string>
+    <string name="camera_error_try_restart">Error de cámara, intenta reiniciar la aplicación</string>
+    <string name="camera_initialization_error">Error al inicializar la cámara</string>
+    <string name="camera_binding_error">Error al vincular los casos de uso de la cámara</string>
+    
+    <!-- Location service strings -->
+    <string name="location_permission_required">Se requieren permisos de localización</string>
+    <string name="location_error">Error al obtener la ubicación: %1$s</string>
+    <string name="location_update_received">Ubicación actualizada: %1$.6f, %2$.6f</string>
+    
+    <!-- Error messages for Xiaomi devices -->
+    <string name="xiaomi_check_permissions">Por favor, verifica los permisos en Ajustes > Seguridad de MIUI</string>
+    
+    <!-- Gallery strings -->
+    <string name="no_photos_yet">No hay fotos disponibles</string>
+    <string name="photo_image_description">Imagen capturada</string>
+    <string name="delete_photo">Eliminar foto</string>
+    <string name="confirm_delete_photo">¿Está seguro de eliminar esta foto?</string>
+    <string name="photo_deleted">Foto eliminada correctamente</string>
+    <string name="error_deleting_photo">Error al eliminar la foto</string>
+    <string name="date_time_format">dd/MM/yyyy HH:mm:ss</string>
 </resources>

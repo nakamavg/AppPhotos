@@ -7,14 +7,23 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
 
 import com.example.nemergentprueba.camera.CameraActivity;
+import com.example.nemergentprueba.gallery.GalleryActivity;
+import com.example.nemergentprueba.utils.PermissionHelper;
+import com.example.nemergentprueba.utils.XiaomiHelper;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final int REQUEST_CAMERA_PERMISSIONS = 100;
+    private static final int REQUEST_GALLERY_PERMISSIONS = 101;
+    private boolean pendingCameraLaunch = false;
+    private boolean pendingGalleryLaunch = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +37,66 @@ public class MainActivity extends AppCompatActivity {
 
         // Configurar listener para el botón de cámara
         View cameraButton = findViewById(R.id.camera_button);
-        cameraButton.setOnClickListener(view -> openCamera());
+        cameraButton.setOnClickListener(view -> checkAndRequestCameraPermissions());
 
         // Configurar listener para el botón de galería
         View galleryButton = findViewById(R.id.gallery_button);
-        galleryButton.setOnClickListener(view -> openGallery());
+        galleryButton.setOnClickListener(view -> checkAndRequestGalleryPermissions());
+        
+        // Mostrar ayuda específica para dispositivos Xiaomi si es necesario
+        if (XiaomiHelper.isXiaomiDevice()) {
+            XiaomiHelper.showXiaomiInstallationHelp(this);
+        }
+    }
+
+    /**
+     * Verifica y solicita permisos para la cámara
+     */
+    private void checkAndRequestCameraPermissions() {
+        String[] permissions = PermissionHelper.getCameraPermissions();
+        if (PermissionHelper.requestPermissions(this, permissions, REQUEST_CAMERA_PERMISSIONS)) {
+            openCamera();
+        } else {
+            pendingCameraLaunch = true;
+        }
+    }
+    
+    /**
+     * Verifica y solicita permisos para la galería
+     */
+    private void checkAndRequestGalleryPermissions() {
+        // Para la galería solo necesitamos permisos de lectura en versiones antiguas
+        String[] permissions = new String[0];
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            permissions = new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE};
+        }
+        
+        if (permissions.length == 0 || PermissionHelper.requestPermissions(this, permissions, REQUEST_GALLERY_PERMISSIONS)) {
+            openGallery();
+        } else {
+            pendingGalleryLaunch = true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        
+        if (requestCode == REQUEST_CAMERA_PERMISSIONS) {
+            if (PermissionHelper.handlePermissionResult(this, requestCode, permissions, grantResults)) {
+                if (pendingCameraLaunch) {
+                    pendingCameraLaunch = false;
+                    openCamera();
+                }
+            }
+        } else if (requestCode == REQUEST_GALLERY_PERMISSIONS) {
+            if (PermissionHelper.handlePermissionResult(this, requestCode, permissions, grantResults)) {
+                if (pendingGalleryLaunch) {
+                    pendingGalleryLaunch = false;
+                    openGallery();
+                }
+            }
+        }
     }
 
     /**
@@ -59,12 +123,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openGallery() {
-        // La implementación de la galería se hará en el siguiente paso
-        // Por ahora solo mostramos un mensaje
-        // Intent intent = new Intent(this, GalleryActivity.class);
-        // startActivity(intent);
-        
-        // Mensaje temporal hasta implementar la galería
-        Toast.makeText(this, "La galería se implementará próximamente", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, GalleryActivity.class);
+        startActivity(intent);
     }
 }

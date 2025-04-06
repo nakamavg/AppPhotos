@@ -15,5 +15,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <!-- Agregar explícitamente las actividades necesarias -->
+        <activity
+            android:name=".gallery.GalleryActivity" 
+            android:exported="false"
+            android:label="@string/gallery_button"
+            android:screenOrientation="portrait" />
+            
+        <activity
+            android:name=".camera.CameraActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>
