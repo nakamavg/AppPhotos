@@ -15,14 +15,14 @@ import androidx.core.app.ActivityCompat;
 
 /**
  * Clase para gestionar la ubicación con sistema de caché
- * Reduce las consultas al GPS cuando se toman varias fotos en sucesión rápida
+ * Actualiza continuamente la ubicación cuando hay movimiento significativo
  */
 public class LocationCache {
     private static final String TAG = "LocationCache";
     
     // Constantes para la gestión de la caché
-    private static final long MIN_TIME_BETWEEN_UPDATES = 30000; // 30 segundos en milisegundos
-    private static final float MIN_DISTANCE_FOR_UPDATE = 10.0f; // 10 metros
+    private static final long MIN_TIME_BETWEEN_UPDATES = 5000; // 5 segundos en milisegundos (reducido para más frecuencia)
+    private static final float MIN_DISTANCE_FOR_UPDATE = 5.0f; // 5 metros (reducido para mayor sensibilidad)
     
     // Valores por defecto cuando no hay ubicación disponible
     private static final double DEFAULT_LATITUDE = 0.0;
@@ -32,6 +32,7 @@ public class LocationCache {
     private Location lastKnownLocation;
     private long lastLocationTime;
     private boolean isRequestingLocation;
+    private boolean continuousUpdates = false;
     
     // Referencias al sistema
     private LocationManager locationManager;
@@ -68,8 +69,8 @@ public class LocationCache {
             public void onLocationChanged(@NonNull Location location) {
                 updateCachedLocation(location);
                 
-                // Si estamos obteniendo actualizaciones continuas, detenerlas después de recibir una ubicación válida
-                if (isRequestingLocation) {
+                // En modo continuo, no detenemos las actualizaciones
+                if (isRequestingLocation && !continuousUpdates) {
                     stopLocationUpdates();
                 }
             }
@@ -81,7 +82,7 @@ public class LocationCache {
             
             @Override
             public void onProviderEnabled(@NonNull String provider) {
-                // Opcional: intenta obtener la ubicación cuando el proveedor se habilita
+                // Intenta obtener la ubicación cuando el proveedor se habilita
                 if (provider.equals(LocationManager.GPS_PROVIDER) ||
                     provider.equals(LocationManager.NETWORK_PROVIDER)) {
                     requestLocationUpdate();
@@ -90,18 +91,25 @@ public class LocationCache {
             
             @Override
             public void onProviderDisabled(@NonNull String provider) {
-                // Opcional: manejar cuando se deshabilita el proveedor
+                Log.d(TAG, "Proveedor deshabilitado: " + provider);
+                // Si se desactiva GPS pero tenemos NETWORK, seguir usando eso
+                if (provider.equals(LocationManager.GPS_PROVIDER) && 
+                    locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                    requestLocationUpdate();
+                }
             }
         };
         
         // Iniciar con una solicitud de ubicación para tener datos lo antes posible
-        requestLocationUpdate();
+        // y mantener actualizaciones continuas
+        startContinuousUpdates();
     }
     
     /**
      * Actualiza la ubicación en caché
+     * Ahora es público para permitir actualizaciones desde LocationService
      */
-    private synchronized void updateCachedLocation(Location location) {
+    public synchronized void updateCachedLocation(Location location) {
         if (location != null) {
             Log.d(TAG, "Ubicación actualizada: " + location.getLatitude() + ", " + location.getLongitude());
             lastKnownLocation = location;
@@ -116,8 +124,18 @@ public class LocationCache {
         if (locationManager != null) {
             locationManager.removeUpdates(locationListener);
             isRequestingLocation = false;
+            continuousUpdates = false;
             Log.d(TAG, "Actualizaciones de ubicación detenidas");
         }
+    }
+    
+    /**
+     * Inicia actualizaciones continuas de ubicación
+     */
+    public void startContinuousUpdates() {
+        continuousUpdates = true;
+        requestLocationUpdate();
+        Log.d(TAG, "Actualizaciones continuas iniciadas");
     }
     
     /**
@@ -131,6 +149,11 @@ public class LocationCache {
             // No tenemos permisos, no podemos continuar
             Log.w(TAG, "Sin permisos de ubicación");
             return;
+        }
+        
+        // Detener actualizaciones anteriores para evitar duplicados
+        if (isRequestingLocation) {
+            locationManager.removeUpdates(locationListener);
         }
         
         isRequestingLocation = true;
@@ -200,7 +223,9 @@ public class LocationCache {
             lastKnownLocation.getLatitude() == DEFAULT_LATITUDE && 
             lastKnownLocation.getLongitude() == DEFAULT_LONGITUDE) {
             
-            requestLocationUpdate();
+            if (!isRequestingLocation) {
+                requestLocationUpdate();
+            }
         }
         
         return lastKnownLocation;
@@ -231,9 +256,34 @@ public class LocationCache {
     }
     
     /**
+     * Detiene las actualizaciones continuas pero mantiene la capacidad de solicitar ubicación
+     */
+    public void pauseContinuousUpdates() {
+        if (continuousUpdates) {
+            stopLocationUpdates();
+            continuousUpdates = false;
+            Log.d(TAG, "Actualizaciones continuas pausadas");
+        }
+    }
+    
+    /**
      * Limpia los recursos cuando ya no se necesitan
      */
     public void cleanup() {
         stopLocationUpdates();
+    }
+    
+    /**
+     * Verifica si la posición ha cambiado significativamente
+     * @param newLocation Nueva ubicación para comparar
+     * @return true si ha cambiado significativamente
+     */
+    public boolean hasLocationChangedSignificantly(Location newLocation) {
+        if (lastKnownLocation == null || newLocation == null) {
+            return false;
+        }
+        
+        float distance = lastKnownLocation.distanceTo(newLocation);
+        return distance > MIN_DISTANCE_FOR_UPDATE;
     }
 }

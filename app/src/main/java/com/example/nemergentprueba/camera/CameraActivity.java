@@ -16,6 +16,7 @@ import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 
 import com.example.nemergentprueba.R;
+import com.example.nemergentprueba.location.LocationCache;
 import com.example.nemergentprueba.location.LocationService;
 import com.example.nemergentprueba.utils.PermissionHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -56,6 +57,7 @@ public class CameraActivity extends AppCompatActivity implements LocationService
     private Runnable cameraRestartRunnable;
     
     private LocationService locationService;
+    private LocationCache locationCache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,7 @@ public class CameraActivity extends AppCompatActivity implements LocationService
 
         cameraExecutor = Executors.newSingleThreadExecutor();
         locationService = new LocationService(this);
+        locationCache = LocationCache.getInstance(this);
         cameraRestartRunnable = this::restartCamera;
         
         requestCameraPermissions();
@@ -98,9 +101,32 @@ public class CameraActivity extends AppCompatActivity implements LocationService
             startCamera();
         }
         
+        // Iniciar actualizaciones de ubicación continuas
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == 
                 PackageManager.PERMISSION_GRANTED) {
             locationService.startLocationUpdates(this);
+            
+            // Asegurar que tenemos actualizaciones continuas desde el inicio
+            locationCache.startContinuousUpdates();
+            
+            // Actualizamos la cámara con la ubicación actual
+            updateCameraWithCurrentLocation();
+        }
+    }
+    
+    /**
+     * Actualiza la cámara con la ubicación actual inmediatamente
+     * para no tener que esperar por una nueva actualización
+     */
+    private void updateCameraWithCurrentLocation() {
+        if (currentCamera != null && currentCamera.isInitialized()) {
+            Location location = locationService.getLastLocation();
+            if (location != null && (location.getLatitude() != 0 || location.getLongitude() != 0)) {
+                currentCamera.updateLocation(location);
+                Log.d(TAG, "Cámara actualizada con ubicación actual: " + location.getLatitude() + ", " + location.getLongitude());
+            } else {
+                Log.d(TAG, "No hay ubicación válida disponible para actualizar la cámara");
+            }
         }
     }
     
@@ -118,7 +144,9 @@ public class CameraActivity extends AppCompatActivity implements LocationService
         super.onPause();
         
         mainHandler.removeCallbacks(cameraRestartRunnable);
-        locationService.stopLocationUpdates();
+        
+        // No detenemos las actualizaciones de ubicación para mantener la caché actualizada
+        // locationService.stopLocationUpdates();
     }
     
     private void requestCameraPermissions() {
@@ -143,6 +171,7 @@ public class CameraActivity extends AppCompatActivity implements LocationService
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == 
                 PackageManager.PERMISSION_GRANTED) {
             locationService.startLocationUpdates(this);
+            locationCache.startContinuousUpdates();
         }
     }
     
@@ -154,6 +183,9 @@ public class CameraActivity extends AppCompatActivity implements LocationService
     private void startCamera() {
         currentCamera = new BackCamera(this, viewFinder);
         currentCamera.startCamera(this);
+        
+        // Actualizar la cámara con la ubicación actual inmediatamente
+        updateCameraWithCurrentLocation();
     }
 
     private void toggleCamera() {
@@ -169,12 +201,8 @@ public class CameraActivity extends AppCompatActivity implements LocationService
         }
         currentCamera.startCamera(this);
         
-        Location lastLocation = locationService.getLastLocation();
-        if (lastLocation != null && (lastLocation.getLatitude() != 0 || lastLocation.getLongitude() != 0)) {
-            currentCamera.updateLocation(lastLocation);
-        } else {
-            Log.w(TAG, "Ubicación no válida o coordenadas cero");
-        }
+        // Actualizar la cámara con la ubicación actual inmediatamente
+        updateCameraWithCurrentLocation();
     }
 
     private void takePhoto() {
@@ -190,8 +218,9 @@ public class CameraActivity extends AppCompatActivity implements LocationService
         
         if (currentCamera.isCapturing()) {
             if (currentCamera != null && currentCamera.isInitialized()) {
-    Toast.makeText(this, R.string.wait_for_processing, Toast.LENGTH_SHORT).show();
-}
+                // Eliminamos el Toast para no molestar al usuario
+                Log.d(TAG, "Ya hay una captura en proceso, ignorando esta solicitud");
+            }
             return;
         }
         
@@ -214,6 +243,10 @@ public class CameraActivity extends AppCompatActivity implements LocationService
         File outputDirectory = getOutputDirectory();
         
         try {
+            // Actualizar la cámara con la ubicación actual antes de tomar la foto
+            // para asegurar que tenemos los datos más recientes
+            updateCameraWithCurrentLocation();
+            
             currentCamera.capturePhoto(outputDirectory, ContextCompat.getMainExecutor(this));
         } catch (Exception e) {
             Log.e(TAG, "Error al llamar a capturePhoto: " + e.getMessage(), e);
@@ -258,9 +291,8 @@ public class CameraActivity extends AppCompatActivity implements LocationService
                 if (currentCamera.isInitialized()) {
                     Log.d(TAG, "Cámara reiniciada exitosamente");
                     
-                    if (locationService != null && locationService.getLastLocation() != null) {
-                        currentCamera.updateLocation(locationService.getLastLocation());
-                    }
+                    // Actualizar inmediatamente con la ubicación actual
+                    updateCameraWithCurrentLocation();
                     
                     restartAttempts = 0;
                 } else if (restartAttempts < MAX_RESTART_ATTEMPTS) {
@@ -315,14 +347,21 @@ public class CameraActivity extends AppCompatActivity implements LocationService
             currentCamera = null;
         }
         
+        // Detener las actualizaciones de ubicación solo cuando se destruye la actividad
         if (locationService != null) {
             locationService.stopLocationUpdates();
+        }
+        
+        // Pausar las actualizaciones continuas pero mantener la caché
+        if (locationCache != null) {
+            locationCache.pauseContinuousUpdates();
         }
     }
     
     @Override
     public void onStop() {
         super.onStop();
+        // No detenemos las actualizaciones para mantener la caché actualizada
     }
     
     @Override
@@ -330,6 +369,7 @@ public class CameraActivity extends AppCompatActivity implements LocationService
         if (currentCamera != null && location != null && 
             (location.getLatitude() != 0 || location.getLongitude() != 0)) {
             currentCamera.updateLocation(location);
+            Log.d(TAG, "Ubicación actualizada en cámara: " + location.getLatitude() + ", " + location.getLongitude());
         } else if (location != null) {
             Log.d(TAG, "Ubicación descartada: " + location.getLatitude() + ", " + location.getLongitude());
         }
@@ -338,6 +378,9 @@ public class CameraActivity extends AppCompatActivity implements LocationService
     @Override
     public void onLocationError(String error) {
         Log.e(TAG, "Error de ubicación: " + error);
-        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+        // Solo mostramos errores críticos al usuario
+        if (error.contains("permission") || error.contains("inactive")) {
+            Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+        }
     }
 }

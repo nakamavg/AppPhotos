@@ -20,6 +20,7 @@ import com.google.android.gms.location.Priority;
 
 /**
  * Servicio para gestionar la obtención de coordenadas de localización.
+ * Integra el sistema de caché para actualizaciones continuas basadas en movimiento.
  */
 public class LocationService {
     private static final String TAG = "LocationService";
@@ -29,10 +30,12 @@ public class LocationService {
     private LocationCallback locationCallback;
     private Location lastLocation;
     private LocationListener locationListener;
+    private LocationCache locationCache;
 
     public LocationService(Context context) {
         this.context = context;
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+        locationCache = LocationCache.getInstance(context);
     }
 
     /**
@@ -50,6 +53,10 @@ public class LocationService {
             return;
         }
 
+        // Aseguramos que la caché esté utilizando actualizaciones continuas
+        locationCache.startContinuousUpdates();
+
+        // Configuramos las actualizaciones de ubicación con FusedLocationClient
         LocationRequest locationRequest = new LocationRequest.Builder(10000)
                 .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
                 .setMinUpdateIntervalMillis(5000)
@@ -72,6 +79,13 @@ public class LocationService {
             fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
                 if (location != null) {
                     updateLocation(location);
+                } else {
+                    // Si no hay ubicación disponible, usar la de la caché
+                    Location cachedLocation = locationCache.getCurrentLocation();
+                    if (cachedLocation != null && 
+                        (cachedLocation.getLatitude() != 0 || cachedLocation.getLongitude() != 0)) {
+                        updateLocation(cachedLocation);
+                    }
                 }
             });
         } catch (SecurityException e) {
@@ -89,6 +103,9 @@ public class LocationService {
         if (locationCallback != null) {
             fusedLocationClient.removeLocationUpdates(locationCallback);
         }
+        
+        // No detenemos las actualizaciones continuas de la caché
+        // para mantener los datos actualizados en segundo plano
     }
 
     /**
@@ -96,11 +113,26 @@ public class LocationService {
      * @return La última ubicación o null si no está disponible
      */
     public Location getLastLocation() {
-        return lastLocation;
+        // Primero verificamos nuestra caché interna
+        if (lastLocation != null && 
+            (lastLocation.getLatitude() != 0 || lastLocation.getLongitude() != 0)) {
+            return lastLocation;
+        }
+        
+        // Si no tenemos ubicación en caché interna, usamos la del sistema de caché
+        return locationCache.getCurrentLocation();
     }
 
     private void updateLocation(Location location) {
+        if (location == null || (location.getLatitude() == 0 && location.getLongitude() == 0)) {
+            return; // Evitamos actualizar con ubicaciones inválidas
+        }
+        
         lastLocation = location;
+        
+        // Actualizamos también el sistema de caché
+        locationCache.updateCachedLocation(location);
+        
         if (locationListener != null) {
             locationListener.onLocationChanged(location);
         }
