@@ -83,7 +83,7 @@ public abstract class Camera {
 
         if (viewFinder == null || viewFinder.getDisplay() == null) {
             Log.e(TAG, "ViewFinder no está disponible o no tiene display");
-            Toast.makeText(context, R.string.camera_not_initialized, Toast.LENGTH_SHORT).show();
+            Log.e(TAG, context.getString(R.string.camera_not_initialized));
             initialized = false;
             return;
         }
@@ -113,11 +113,11 @@ public abstract class Camera {
             } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Error starting camera: " + e.getMessage(), e);
                 initialized = false;
-                Toast.makeText(context, R.string.camera_initialization_error, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, context.getString(R.string.camera_initialization_error));
             } catch (Exception e) {
                 Log.e(TAG, "Error inesperado al iniciar la cámara: " + e.getMessage(), e);
                 initialized = false;
-                Toast.makeText(context, R.string.camera_initialization_error, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, context.getString(R.string.camera_initialization_error));
             }
         }, ContextCompat.getMainExecutor(context));
     }
@@ -146,20 +146,28 @@ public abstract class Camera {
         } catch (Exception e) {
             Log.e(TAG, "Error binding camera use cases: " + e.getMessage(), e);
             initialized = false;
-            Toast.makeText(context, R.string.camera_binding_error, Toast.LENGTH_SHORT).show();
+            Log.e(TAG, context.getString(R.string.camera_binding_error));
         }
     }
 
     public void updateLocation(Location location) {
-        this.currentLocation = location;
-        Log.d(TAG, context.getString(R.string.location_update_received, 
-                location.getLatitude(), location.getLongitude()));
+        if (location != null && (location.getLatitude() != 0 || location.getLongitude() != 0)) {
+            currentLocation = location;
+            Log.d(TAG, "Ubicación actualizada: " + location.getLatitude() + ", " + location.getLongitude());
+        } else {
+            Log.w(TAG, "Ubicación inválida o no disponible");
+            if (location == null) {
+                Log.w(TAG, "El objeto Location es nulo");
+            } else {
+                Log.w(TAG, "Coordenadas recibidas: " + location.getLatitude() + ", " + location.getLongitude());
+            }
+        }
     }
 
     public void capturePhoto(File outputDirectory, Executor executor) {
         if (isCapturing.getAndSet(true)) {
             Log.d(TAG, "Ya hay una captura en proceso, ignorando esta solicitud");
-            Toast.makeText(context, R.string.wait_for_processing, Toast.LENGTH_SHORT).show();
+            Log.d(TAG, context.getString(R.string.wait_for_processing));
             return;
         }
 
@@ -167,14 +175,14 @@ public abstract class Camera {
             Log.e(TAG, "imageCapture es null, reiniciando componente");
             isCapturing.set(false);
             imageCapture = createImageCaptureUseCase();
-            Toast.makeText(context, R.string.camera_not_initialized, Toast.LENGTH_SHORT).show();
+            Log.e(TAG, context.getString(R.string.camera_not_initialized));
             return;
         }
 
         if (!initialized || cameraProvider == null) {
             Log.e(TAG, "Cámara no inicializada o provider es null");
             isCapturing.set(false);
-            Toast.makeText(context, R.string.camera_not_initialized, Toast.LENGTH_SHORT).show();
+            Log.e(TAG, context.getString(R.string.camera_not_initialized));
             return;
         }
 
@@ -183,7 +191,7 @@ public abstract class Camera {
             if (photoFile == null) {
                 Log.e(TAG, "No se pudo crear el archivo temporal");
                 isCapturing.set(false);
-                Toast.makeText(context, R.string.error_storage_preparation, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, context.getString(R.string.error_storage_preparation));
                 return;
             }
 
@@ -191,7 +199,7 @@ public abstract class Camera {
                     new ImageCapture.OutputFileOptions.Builder(photoFile)
                     .build();
 
-            Toast.makeText(context, R.string.processing_image, Toast.LENGTH_SHORT).show();
+            Log.d(TAG, context.getString(R.string.processing_image));
 
             final Date captureDate = new Date();
 
@@ -212,7 +220,7 @@ public abstract class Camera {
                                 resetImageCaptureIfNeeded();
                             } catch (Exception e) {
                                 Log.e(TAG, "Error en procesamiento post-captura: " + e.getMessage(), e);
-                                Toast.makeText(context, R.string.error_processing_image, Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, context.getString(R.string.error_processing_image));
                             } finally {
                                 isCapturing.set(false);
                             }
@@ -221,7 +229,7 @@ public abstract class Camera {
                         @Override
                         public void onError(@NonNull ImageCaptureException exception) {
                             Log.e(TAG, "Error al capturar imagen: " + exception.getMessage(), exception);
-                            Toast.makeText(context, R.string.error_taking_photo, Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, context.getString(R.string.error_taking_photo));
 
                             cleanupTempFile(photoFile);
                             resetImageCaptureIfNeeded();
@@ -231,7 +239,7 @@ public abstract class Camera {
             );
         } catch (Exception e) {
             Log.e(TAG, "Error general al preparar captura: " + e.getMessage(), e);
-            Toast.makeText(context, R.string.error_preparing_camera, Toast.LENGTH_SHORT).show();
+            Log.e(TAG, context.getString(R.string.error_preparing_camera));
             isCapturing.set(false);
 
             mainHandler.postDelayed(this::attemptRecovery, 500);
@@ -295,10 +303,12 @@ public abstract class Camera {
         double longitude = 0.0;
         Float accuracy = null;
 
-        if (currentLocation != null) {
+        if (currentLocation != null && currentLocation.getLatitude() != 0 && currentLocation.getLongitude() != 0) {
             latitude = currentLocation.getLatitude();
             longitude = currentLocation.getLongitude();
             accuracy = currentLocation.hasAccuracy() ? currentLocation.getAccuracy() : null;
+        } else {
+            Log.w(TAG, "Ubicación no disponible o inválida (0,0)");
         }
 
         PhotoEntity photoEntity = new PhotoEntity(
@@ -354,7 +364,7 @@ public abstract class Camera {
             }
 
             Log.d(TAG, context.getString(R.string.photo_saved_gallery) + ": " + imageUri);
-            Toast.makeText(context, R.string.photo_saved_gallery, Toast.LENGTH_SHORT).show();
+            Log.d(TAG, context.getString(R.string.photo_saved_gallery));
         } else {
             File pictureFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
             File destinationFile = new File(pictureFolder, "Camera/" + fileName);
@@ -370,7 +380,7 @@ public abstract class Camera {
             context.sendBroadcast(mediaScanIntent);
 
             Log.d(TAG, context.getString(R.string.photo_saved_gallery) + ": " + destinationFile.getAbsolutePath());
-            Toast.makeText(context, R.string.photo_saved_gallery, Toast.LENGTH_SHORT).show();
+            Log.d(TAG, context.getString(R.string.photo_saved_gallery));
         }
 
         return relativePath;

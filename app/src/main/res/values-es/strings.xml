@@ -61,4 +61,51 @@
     <string name="photo_deleted">Foto eliminada correctamente</string>
     <string name="error_deleting_photo">Error al eliminar la foto</string>
     <string name="date_time_format">dd/MM/yyyy HH:mm:ss</string>
+    
+    <!-- Gallery info strings -->
+    <string name="photo_date_label">Fecha: %s</string>
+    <string name="photo_location_label">Ubicación: %.6f, %.6f</string>
+    
+    <!-- Ping feature strings -->
+    <string name="ping_no_results">No hay resultados de ping disponibles</string>
+    <string name="ping_summary_label">Resumen:</string>
+    <string name="ping_successful_label">Exitosos</string>
+    <string name="ping_failed_label">Fallidos</string>
+    <string name="ping_status_ready">Estado: Listo para iniciar</string>
+    <string name="ping_started">PING iniciado (%d intentos)</string>
+    <string name="ping_progress">PING en curso (%1$d/%2$d)</string>
+    <string name="ping_completed">PING completado</string>
+    <string name="ping_summary">Resultado: %1$d éxitos, %2$d fallos de %3$d intentos</string>
+    <string name="ping_success">Exitoso</string>
+    <string name="ping_fail">Fallido</string>
+    <string name="ping_time">Tiempo:</string>
+    <string name="ping_invalid_attempts">Por favor ingrese un número válido de intentos</string>
+    <string name="ping_start_button">Iniciar PING</string>
+    <string name="ping_stop_button">Detener PING</string>
+    <string name="ping_status_in_progress">PING en progreso (%1$d/%2$d)</string>
+    <string name="ping_status_completed">PING completado</string>
+    <string name="ping_status_stopped">PING detenido</string>
+    <string name="enter_valid_attempts">Por favor ingrese valores válidos</string>
+    <string name="attempts_range_error">El número de intentos debe estar entre %1$d y %2$d</string>
+    <string name="ping_result_success">Exitoso - %1$d ms</string>
+    <string name="ping_result_failure">Fallido</string>
+    
+    <!-- Additional Ping feature strings -->
+    <string name="stop_ping">Detener PING</string>
+    <string name="start_ping">Iniciar PING</string>
+    <string name="ping_error">Error: %1$s</string>
+    <string name="ping_button">Test de Ping</string>
+    
+    <!-- New detailed ping information strings -->
+    <string name="ping_ip_address">IP: %1$s</string>
+    <string name="ping_packet_size">Tamaño: %1$d bytes</string>
+    <string name="ping_ttl">TTL: %1$d</string>
+    <string name="ping_time_ms">Tiempo: %1$d ms</string>
+    
+    <!-- New ping dialog strings -->
+    <string name="ping_attempts_label">Número de intentos:</string>
+    <string name="ping_selected_attempts">Intentos seleccionados:</string>
+    <string name="ping_attempts_hint">Ingrese número de intentos (1-100)</string>
+    <string name="close_button">Cerrar</string>
+    <string name="ping_attempt_prefix">Intento #</string>
 </resources>

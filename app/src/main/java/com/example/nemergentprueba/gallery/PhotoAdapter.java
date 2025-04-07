@@ -75,10 +75,17 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         // Cargar la imagen de forma asíncrona
         loadBitmapAsync(photo, holder.photoImageView);
         
-        // Configurar fecha y ubicación
-        holder.dateCapturedTextView.setText(String.format("Fecha: %s", dateFormat.format(photo.getCaptureDate())));
-        holder.locationTextView.setText(String.format("Ubicación: %.6f, %.6f", 
-                photo.getLatitude(), photo.getLongitude()));
+        // Configurar fecha y ubicación usando strings localizados
+        holder.dateCapturedTextView.setText(context.getString(
+            R.string.photo_date_label, 
+            dateFormat.format(photo.getCaptureDate())
+        ));
+        
+        holder.locationTextView.setText(context.getString(
+            R.string.photo_location_label,
+            photo.getLatitude(),
+            photo.getLongitude()
+        ));
         
         // Configurar botón de eliminación
         holder.deleteButton.setOnClickListener(v -> {

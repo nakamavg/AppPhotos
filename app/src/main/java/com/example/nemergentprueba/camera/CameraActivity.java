@@ -169,8 +169,11 @@ public class CameraActivity extends AppCompatActivity implements LocationService
         }
         currentCamera.startCamera(this);
         
-        if (locationService.getLastLocation() != null) {
-            currentCamera.updateLocation(locationService.getLastLocation());
+        Location lastLocation = locationService.getLastLocation();
+        if (lastLocation != null && (lastLocation.getLatitude() != 0 || lastLocation.getLongitude() != 0)) {
+            currentCamera.updateLocation(lastLocation);
+        } else {
+            Log.w(TAG, "Ubicación no válida o coordenadas cero");
         }
     }
 
@@ -181,13 +184,14 @@ public class CameraActivity extends AppCompatActivity implements LocationService
             Log.e(TAG, "Cámara es null, creando una nueva");
             startCamera();
             
-            Toast.makeText(this, R.string.camera_not_initialized, Toast.LENGTH_SHORT).show();
             mainHandler.postDelayed(this::takePhoto, 1000);
             return;
         }
         
         if (currentCamera.isCapturing()) {
-            Toast.makeText(this, R.string.wait_for_processing, Toast.LENGTH_SHORT).show();
+            if (currentCamera != null && currentCamera.isInitialized()) {
+    Toast.makeText(this, R.string.wait_for_processing, Toast.LENGTH_SHORT).show();
+}
             return;
         }
         
@@ -323,11 +327,11 @@ public class CameraActivity extends AppCompatActivity implements LocationService
     
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, getString(R.string.location_update_received, 
-                location.getLatitude(), location.getLongitude()));
-        
-        if (currentCamera != null) {
+        if (currentCamera != null && location != null && 
+            (location.getLatitude() != 0 || location.getLongitude() != 0)) {
             currentCamera.updateLocation(location);
+        } else if (location != null) {
+            Log.d(TAG, "Ubicación descartada: " + location.getLatitude() + ", " + location.getLongitude());
         }
     }
     

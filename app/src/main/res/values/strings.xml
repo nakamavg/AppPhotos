@@ -40,10 +40,10 @@
     <string name="error_storage_preparation">Error preparing storage</string>
     
     <!-- New camera error messages -->
-    <string name="wait_for_processing">Por favor espera, procesando imagen anterior...</string>
-    <string name="camera_error_try_restart">Error de cámara, intenta reiniciar la aplicación</string>
-    <string name="camera_initialization_error">Error al inicializar la cámara</string>
-    <string name="camera_binding_error">Error al vincular los casos de uso de la cámara</string>
+    <string name="wait_for_processing">Please wait, processing previous image...</string>
+    <string name="camera_error_try_restart">Camera error, try restarting the app</string>
+    <string name="camera_initialization_error">Error initializing the camera</string>
+    <string name="camera_binding_error">Error binding camera use cases</string>
     
     <!-- Location service strings -->
     <string name="location_permission_required">Location permissions are required</string>
@@ -54,14 +54,63 @@
     <string name="xiaomi_check_permissions">Please check permissions in Settings > Security of MIUI</string>
     
     <!-- Gallery strings -->
-    <string name="no_photos_available">No hay fotos disponibles</string>
-    <string name="captured_photo">Foto capturada</string>
-    <string name="delete_photo">Eliminar foto</string>
-    <string name="photo_deleted">Foto eliminada correctamente</string>
-    <string name="error_deleting_photo">Error al eliminar la foto</string>
-    <string name="gallery_title">Galería de Fotos</string>
-    <string name="date_time_format">dd/MM/yyyy HH:mm:ss</string>
-    <string name="no_photos_yet">No hay fotos aún</string>
-    <string name="photo_image_description">Imagen capturada</string>
-    <string name="confirm_delete_photo">¿Está seguro de eliminar esta foto?</string>
+    <string name="no_photos_available">No photos available</string>
+    <string name="captured_photo">Captured photo</string>
+    <string name="delete_photo">Delete photo</string>
+    <string name="photo_deleted">Photo successfully deleted</string>
+    <string name="error_deleting_photo">Error deleting photo</string>
+    <string name="gallery_title">Photo Gallery</string>
+    <string name="date_time_format">MM/dd/yyyy HH:mm:ss</string>
+    <string name="no_photos_yet">No photos yet</string>
+    <string name="photo_image_description">Captured image</string>
+    <string name="confirm_delete_photo">Are you sure you want to delete this photo?</string>
+    
+    <!-- Gallery info strings -->
+    <string name="photo_date_label">Date: %s</string>
+    <string name="photo_location_label">Location: %.6f, %.6f</string>
+    
+    <!-- Ping feature strings -->
+    <string name="ping_no_results">No ping results available</string>
+    <string name="ping_summary_label">Summary:</string>
+    <string name="ping_successful_label">Successful</string>
+    <string name="ping_failed_label">Failed</string>
+    <string name="ping_status_ready">Status: Ready to start</string>
+    <string name="ping_started">PING started (%d attempts)</string>
+    <string name="ping_progress">PING in progress (%1$d/%2$d)</string>
+    <string name="ping_completed">PING completed</string>
+    <string name="ping_summary">Result: %1$d successful, %2$d failed out of %3$d attempts</string>
+    <string name="ping_success">Successful</string>
+    <string name="ping_fail">Failed</string>
+    <string name="ping_time">Time:</string>
+    <string name="ping_invalid_attempts">Please enter a valid number of attempts</string>
+    <string name="ping_start_button">Start PING</string>
+    <string name="ping_stop_button">Stop PING</string>
+    <string name="ping_status_in_progress">PING in progress (%1$d/%2$d)</string>
+    <string name="ping_status_completed">PING completed</string>
+    <string name="ping_status_stopped">PING stopped</string>
+    <string name="enter_valid_attempts">Please enter valid values</string>
+    <string name="attempts_range_error">Number of attempts must be between %1$d and %2$d</string>
+    <string name="ping_result_success">Successful - %1$d ms</string>
+    <string name="ping_result_failure">Failed</string>
+    
+    <!-- Additional Ping feature strings -->
+    <string name="stop_ping">Stop PING</string>
+    <string name="start_ping">Start PING</string>
+    <string name="ping_error">Error: %1$s</string>
+    <string name="ping_button">Ping Test</string>
+    
+    <!-- New detailed ping information strings -->
+    <string name="ping_ip_address">IP: %1$s</string>
+    <string name="ping_packet_size">Size: %1$d bytes</string>
+    <string name="ping_ttl">TTL: %1$d</string>
+    <string name="ping_time_ms">Time: %1$d ms</string>
+    
+    <!-- New ping dialog strings -->
+    <string name="ping_attempts_label">Number of attempts:</string>
+    <string name="ping_selected_attempts">Selected attempts:</string>
+    <string name="ping_attempts_hint">Enter number of attempts (1-100)</string>
+    <string name="ping_attempts_number">Number of PING attempts:</string>
+    <string name="ping_close_button">Close</string>
+    <string name="close_button">Close</string>
+    <string name="ping_attempt_prefix">Attempt #</string>
 </resources>

@@ -8,6 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
+    <!-- Colors for PING feature -->
+    <color name="ping_success">#4CAF50</color> <!-- Green -->
+    <color name="ping_failure">#F44336</color> <!-- Red -->
+    <color name="ping_fail">@color/ping_failure</color> <!-- Alias for ping_failure -->
+    
     <!-- Default colors that will be overridden by flavors -->
     <color name="backgroundColor">#FFFFFF</color>
     <color name="textColor">#000000</color>

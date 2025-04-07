@@ -15,6 +15,7 @@ import androidx.core.graphics.drawable.IconCompat;
 
 import com.example.nemergentprueba.camera.CameraActivity;
 import com.example.nemergentprueba.gallery.GalleryActivity;
+import com.example.nemergentprueba.network.PingDialogFragment;
 import com.example.nemergentprueba.utils.PermissionHelper;
 import com.example.nemergentprueba.utils.XiaomiHelper;
 
@@ -42,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
         // Configurar listener para el botón de galería
         View galleryButton = findViewById(R.id.gallery_button);
         galleryButton.setOnClickListener(view -> checkAndRequestGalleryPermissions());
+        
+        // Configurar listener para el botón de ping
+        View pingButton = findViewById(R.id.ping_button);
+        pingButton.setOnClickListener(view -> openPingDialog());
         
         // Mostrar ayuda específica para dispositivos Xiaomi si es necesario
         if (XiaomiHelper.isXiaomiDevice()) {
@@ -125,5 +130,10 @@ public class MainActivity extends AppCompatActivity {
     private void openGallery() {
         Intent intent = new Intent(this, GalleryActivity.class);
         startActivity(intent);
+    }
+
+    private void openPingDialog() {
+        PingDialogFragment pingDialogFragment = new PingDialogFragment();
+        pingDialogFragment.show(getSupportFragmentManager(), "PingDialogFragment");
     }
 }
